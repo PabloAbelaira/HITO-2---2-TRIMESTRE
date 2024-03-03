@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mostrar Pedidos XML en HTML</title>
+</head>
+<body>
+  <h1>Pedidos del primer trimestre del año 2021</h1>
+  <table id="tabla-pedidos">
+    <thead>
+      <tr>
+        <th>Número de Pedido</th>
+        <th>Nombre del Cliente</th>
+        <th>Apellidos del Cliente</th>
+        <th>Teléfono</th>
+        <th>Calle</th>
+        <th>Ciudad</th>
+        <th>Código Postal</th>
+        <th>Provincia</th>
+        <th>Correo Electrónico</th>
+        <th>Fecha de Inclusión</th>
+        <th>Fecha de Compra</th>
+        <th>Fecha de Entrega</th>
+        <th>Total de la Factura</th>
+      </tr>
+    </thead>
+    <tbody id="cuerpo-tabla"></tbody>
+  </table>
+
+  <script>
+    // Función para cargar y mostrar datos del XML
+    function cargarDatos() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          mostrarDatos(this);
+        }
+      };
+      xhttp.open("GET", "fase_1.xml", true);
+      xhttp.send();
+    }
+
+    // Función para mostrar los datos en la tabla
+    function mostrarDatos(xml) {
+      var xmlDoc = xml.responseXML;
+      var pedidos = xmlDoc.querySelectorAll("trimestre[numero='1'] pedido");
+
+      var tablaHTML = "";
+
+      pedidos.forEach(function(pedido) {
+        var numeroPedido = pedido.querySelector("detalle_pedido numero_pedido").textContent;
+        var nombre = pedido.querySelector("nombre").textContent;
+        var apellidos = pedido.querySelector("apellidos").textContent;
+        var telefono = pedido.querySelector("telefono").textContent;
+        var calle = pedido.querySelector("direccion calle").textContent;
+        var ciudad = pedido.querySelector("direccion ciudad").textContent;
+        var codigoPostal = pedido.querySelector("direccion codigo_postal").textContent;
+        var provincia = pedido.querySelector("direccion provincia").textContent;
+        var correo = pedido.querySelector("correo").textContent;
+        var fechaInclusion = pedido.querySelector("fecha_inclusion").textContent;
+        var fechaCompra = pedido.querySelector("detalle_pedido fecha_compra").textContent;
+        var fechaEntrega = pedido.querySelector("detalle_pedido fecha_entrega").textContent;
+        var totalFactura = pedido.querySelector("detalle_pedido total_factura").textContent;
+
+        tablaHTML += "<tr>";
+        tablaHTML += "<td>" + numeroPedido + "</td>";
+        tablaHTML += "<td>" + nombre + "</td>";
+        tablaHTML += "<td>" + apellidos + "</td>";
+        tablaHTML += "<td>" + telefono + "</td>";
+        tablaHTML += "<td>" + calle + "</td>";
+        tablaHTML += "<td>" + ciudad + "</td>";
+        tablaHTML += "<td>" + codigoPostal + "</td>";
+        tablaHTML += "<td>" + provincia + "</td>";
+        tablaHTML += "<td>" + correo + "</td>";
+        tablaHTML += "<td>" + fechaInclusion + "</td>";
+        tablaHTML += "<td>" + fechaCompra + "</td>";
+        tablaHTML += "<td>" + fechaEntrega + "</td>";
+        tablaHTML += "<td>" + totalFactura + "</td>";
+        tablaHTML += "</tr>";
+      });
+
+      document.getElementById("cuerpo-tabla").innerHTML = tablaHTML;
+    }
+
+    // Llamar a la función para cargar los datos cuando la página se carga
+    window.onload = function() {
+      cargarDatos();
+    };
+  </script>
+</body>
+</html>
